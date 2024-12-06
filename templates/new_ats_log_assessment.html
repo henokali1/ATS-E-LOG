@@ -21,12 +21,12 @@
         {% endif %}
         {% endwith %}
         
-        <form method="POST" action="/new_ats_log">
+        <form method="POST" action="/new_ats_log_assessment">
             <!-- Horizontal Form Row -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="option">OP :</label>
-                    <select id="option" name="option" required>
+                    <select id="option" name="option" required onchange="opSelected(this)">
                         {% for option in options %}
                             <option value="{{ option }}">{{ option }}</option>
                         {% endfor %}
@@ -49,15 +49,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="initials">Initials:</label>
-                    <select id="initials" name="initials" required>
-                        {% for initial in initials %}
-                            <option value="{{ initial }}">{{ initial }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <div class="form-group">
                     <label for="rating">Rating :</label>
                     <select id="rating" name="rating" required>
                         {% for rating in ratings %}
@@ -65,6 +56,35 @@
                         {% endfor %}
                     </select>
                 </div>
+
+                <div class="form-group">
+                    <label for="ojti_initials">OJTI:</label>
+                    <select id="ojti" name="ojti" required>
+                        {% for initial in initials %}
+                            <option value="{{ initial }}">{{ initial }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="ojti_initials">Examiner:</label>
+                    <select id="examiner" name="examiner" required>
+                        {% for initial in initials %}
+                            <option value="{{ initial }}">{{ initial }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="initials">Trainee/ATCO:</label>
+                    <select id="trainee" name="trainee" required>
+                        {% for initial in initials %}
+                            <option value="{{ initial }}">{{ initial }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
             </div>
 
             <!-- Remarks and Save Button -->
@@ -75,4 +95,20 @@
         </form>
     </div>
 </body>
+
+<script>
+    function opSelected(element){
+     op = document.getElementById("option").innerHTML = element.value;
+     if (op == 'Solo'){
+        window.open("/new_ats_log_solo","_self")
+     }
+     if (op == 'OJT'){
+        window.open("/new_ats_log_ojt","_self")
+     }
+     if (op == 'Assessment'){
+        window.open("/new_ats_log_assessment","_self")
+     }
+     
+}
+</script>
 </html>
