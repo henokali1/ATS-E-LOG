@@ -3,9 +3,6 @@ import sqlite3
 from datetime import datetime
 
 
-ratings = ['ADC','APP','APS','ATCA']
-initials = ['MO', 'AI', 'MS', 'AD', 'AL', 'AN', 'AS', 'AV', 'HA', 'HI', 'KR', 'MY', 'NA', 'AM', 'AR', 'MZ', 'MM', 'KS', 'SE', 'BI', 'SK', 'SH', 'BR', 'AB', 'LB', 'ME', 'MR', 'AO', 'MA']
-
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Used for flashing messages
 
@@ -21,12 +18,13 @@ def init_db():
                 date TEXT,
                 start TEXT,
                 finish TEXT,
-                initials TEXT,
+                initial TEXT,
                 rating TEXT,
                 remarks TEXT,
                 ojti TEXT,
                 examiner TEXT,
-                trainee TEXT
+                trainee TEXT,
+                op TEXT
             )
         ''')
         conn.commit()
@@ -44,9 +42,10 @@ def new_ats_log_solo():
         ojti = 'na'
         examiner = 'na'
         trainee = 'na'
+        op = 'Solo'
 
         # Validation
-        if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee]):
+        if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op]):
             flash('All fields are required!', 'error')
             return redirect('/new_ats_log_solo')
 
@@ -54,9 +53,9 @@ def new_ats_log_solo():
         with sqlite3.connect(DATABASE) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO ats_log (date, start, finish, initials, rating, remarks, ojti, examiner, trainee)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (date, start, finish, initials, rating, remarks, ojti, examiner, trainee))
+                INSERT INTO ats_log (date, start, finish, initial, rating, remarks, ojti, examiner, trainee, op)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op))
             conn.commit()
 
         flash('Log saved successfully!', 'success')
@@ -82,9 +81,10 @@ def new_ats_log_ojt():
         ojti = request.form.get('ojti')
         examiner = 'na'
         trainee = request.form.get('trainee')
+        op = 'OJT'
 
         # Validation
-        if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee]):
+        if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op]):
             flash('All fields are required!', 'error')
             return redirect('/new_ats_log_ojt')
 
@@ -92,9 +92,9 @@ def new_ats_log_ojt():
         with sqlite3.connect(DATABASE) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO ats_log (date, start, finish, initials, rating, remarks, ojti, examiner, trainee)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (date, start, finish, initials, rating, remarks, ojti, examiner, trainee))
+                INSERT INTO ats_log (date, start, finish, initial, rating, remarks, ojti, examiner, trainee, op)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op))
             conn.commit()
 
         flash('Log saved successfully!', 'success')
@@ -121,9 +121,10 @@ def new_ats_log_assessment():
         ojti = request.form.get('ojti')
         examiner = request.form.get('examiner')
         trainee = request.form.get('trainee')
+        op = 'Assessment'
 
         # Validation
-        if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee]):
+        if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op]):
             flash('All fields are required!', 'error')
             return redirect('/new_ats_log_ojt')
 
@@ -131,9 +132,9 @@ def new_ats_log_assessment():
         with sqlite3.connect(DATABASE) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO ats_log (date, start, finish, initials, rating, remarks, ojti, examiner, trainee)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (date, start, finish, initials, rating, remarks, ojti, examiner, trainee))
+                INSERT INTO ats_log (date, start, finish, initial, rating, remarks, ojti, examiner, trainee, op)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op))
             conn.commit()
 
         flash('Log saved successfully!', 'success')
