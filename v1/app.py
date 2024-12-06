@@ -20,7 +20,7 @@ def init_db():
                 start TEXT,
                 finish TEXT,
                 initials TEXT,
-                position TEXT,
+                rating TEXT,
                 remarks TEXT
             )
         ''')
@@ -34,11 +34,11 @@ def new_ats_log():
         start = request.form.get('start')
         finish = request.form.get('finish')
         initials = request.form.get('initials')
-        position = request.form.get('position')
+        rating = request.form.get('rating')
         remarks = request.form.get('remarks')
 
         # Validation
-        if not all([date, start, finish, initials, position, remarks]):
+        if not all([date, start, finish, initials, rating, remarks]):
             flash('All fields are required!', 'error')
             return redirect('/new_ats_log')
 
@@ -46,9 +46,9 @@ def new_ats_log():
         with sqlite3.connect(DATABASE) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO ats_log (date, start, finish, initials, position, remarks)
+                INSERT INTO ats_log (date, start, finish, initials, rating, remarks)
                 VALUES (?, ?, ?, ?, ?, ?)
-            ''', (date, start, finish, initials, position, remarks))
+            ''', (date, start, finish, initials, rating, remarks))
             conn.commit()
 
         flash('Log saved successfully!', 'success')
@@ -57,9 +57,9 @@ def new_ats_log():
     # Default data for date and UTC time
     current_date = datetime.now(timezone.utc).strftime('%Y-%m-%d')
     current_utc_time = datetime.now(timezone.utc).strftime('%H:%M')  # Ensure 24-hour format
-    positions = ['VCR Main', 'ACR Main', 'VCR AST', 'ACR AST', 'VCR BACKUP', 'ACR BACKUP', 'VCR GROUND', 'VCR SUP', 'ACR SUP']
+    ratings = ['VCR Main', 'ACR Main', 'VCR AST', 'ACR AST', 'VCR BACKUP', 'ACR BACKUP', 'VCR GROUND', 'VCR SUP', 'ACR SUP']
     initials = ['MO', 'AI', 'MS', 'AD', 'AL', 'AN', 'AS', 'AV', 'HA', 'HI', 'KR', 'MY', 'NA', 'AM', 'AR', 'MZ', 'MM', 'KS', 'SE', 'BI', 'SK', 'SH', 'BR', 'AB', 'LB', 'ME', 'MR', 'AO', 'MA']
-    return render_template('new_ats_log.html', date=current_date, time=current_utc_time, positions=positions, initials=initials)
+    return render_template('new_ats_log.html', date=current_date, time=current_utc_time, ratings=ratings, initials=initials)
 
 if __name__ == '__main__':
     init_db()
