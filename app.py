@@ -30,6 +30,10 @@ def init_db():
         conn.commit()
 from datetime import datetime, timezone
 
+@app.route('/', methods=['GET'])
+def index():
+        return redirect('/new_ats_log_solo')
+
 @app.route('/new_ats_log_solo', methods=['GET', 'POST'])
 def new_ats_log_solo():
     if request.method == 'POST':
@@ -148,6 +152,30 @@ def new_ats_log_assessment():
     initials = ['MO', 'AI', 'MS', 'AD', 'AL', 'AN', 'AS', 'AV', 'HA', 'HI', 'KR', 'MY', 'NA', 'AM', 'AR', 'MZ', 'MM', 'KS', 'SE', 'BI', 'SK', 'SH', 'BR', 'AB', 'LB', 'ME', 'MR', 'AO', 'MA']
     return render_template('new_ats_log_assessment.html', date=current_date, time=current_utc_time, ratings=ratings, initials=initials, options=options)
 
+@app.route('/ats_logs', methods=['GET'])
+def ats_logs():
+    page = request.args.get('page', 1, type=int)
+    per_page = 10  # Number of logs per page
+    offset = (page - 1) * per_page
+
+    # Fetch data from the database with pagination
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT id, date, start, finish, initial, rating, remarks, ojti, examiner, trainee, op
+            FROM ats_log ORDER BY id DESC 
+            LIMIT ? OFFSET ?
+        ''', (per_page, offset))
+        logs = cursor.fetchall()
+
+        # Get total count for pagination
+        cursor.execute('SELECT COUNT(*) FROM ats_log')
+        total_logs = cursor.fetchone()[0]
+
+    # Calculate total pages
+    total_pages = (total_logs + per_page - 1) // per_page
+
+    return render_template('ats_logs.html', logs=logs, page=page, total_pages=total_pages)
 
 if __name__ == '__main__':
     init_db()
