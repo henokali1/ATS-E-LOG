@@ -20,7 +20,7 @@
             </ul>
         {% endif %}
         {% endwith %}
-        
+
         <form method="POST" action="/new_ats_log_ojt">
             <!-- Horizontal Form Row -->
             <div class="form-row">
@@ -76,12 +76,63 @@
                 </div>
             </div>
 
-            <!-- Remarks and Save Button -->
-            <label for="remarks">Remarks:</label>
-            <textarea id="remarks" name="remarks" required></textarea>
-
-            <button type="submit" class="submit-btn">Save</button>
+            <div class="remarks-row">
+                <label for="remarks">Remarks:</label>
+                <textarea id="remarks" name="remarks" required></textarea>
+                <button type="submit" class="submit-btn">Save</button>
+            </div>
+            
         </form>
+        
+
+        <br><br><br>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Start</th>
+                    <th>Finish</th>
+                    <th>Initials</th>
+                    <th>Rating</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td style="width: 100px;">{{ log[1] }}</td>
+                    <td>{{ log[2] }}</td>
+                    <td>{{ log[3] }}</td>
+                    <td>
+                        {% if log[10] == "Solo" %}
+                        <span class="chip">{{ log[4] }}</span>
+                        {% elif log[10] == "OJT" %}
+                        <span class="chip">OJTI: {{ log[7] }}</span> 
+                        <span class="chip">Trainee: {{ log[9] }}</span>
+                        {% elif log[10] == "Assessment" %}
+                        <span class="chip">OJTI: {{ log[7] }}</span> 
+                        <span class="chip">Examiner: {{ log[8] }}</span> 
+                        <span class="chip">Trainee: {{ log[9] }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ log[5] }}</td>
+                    <td>{{ log[6] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="{{ url_for('new_ats_log_ojt', page=page-1) }}">Previous</a>
+            {% endif %}
+            <span>Page {{ page }} of {{ total_pages }}</span>
+            {% if page < total_pages %}
+            <a href="{{ url_for('new_ats_log_ojt', page=page+1) }}">Next</a>
+            {% endif %}
+        </div>
     </div>
 </body>
 

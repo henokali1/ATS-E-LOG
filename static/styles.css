@@ -7,10 +7,12 @@ body {
 }
 /* Center content and align logo */
 .container {
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 1200px;
+    margin: 20px auto;
     padding: 20px;
-    font-family: Arial, sans-serif;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Logo styling */
@@ -25,6 +27,7 @@ h1 {
     text-align: center;
     color: #68B2E3;
     font-size: 24px;
+    margin-bottom: 20px;
 }
 
 /* Horizontal row for input fields */
@@ -45,22 +48,21 @@ h1 {
 
 /* Adjust text areas and buttons */
 textarea {
-    width: 100%;
-    height: 80px;
+    flex: 7; /* Occupy more space (80%) */
+    height: 40px; /* Match the height of the button */
     resize: vertical;
-    margin-top: 10px;
+    margin: 0; /* Remove additional margins */
 }
 
 .submit-btn {
-    display: block;
-    width: 100%;
+    flex: 0.5; /* Occupy remaining space */
+    height: 40px; /* Match the height of the text area */
     background-color: #68B2E3;
     color: white;
     border: none;
     padding: 10px;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 10px;
     text-align: center;
 }
 
@@ -80,4 +82,76 @@ li.error {
 
 li.success {
     color: green;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+table th, table td {
+    padding: 12px;
+    text-align: left;
+}
+table thead th {
+    background-color: #68B2E3;
+    color: white;
+    text-transform: uppercase;
+}
+table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+table tbody tr:hover {
+    background-color: #eef5fc;
+}
+.chip {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    border-radius: 16px;
+    background-color: #68B2E3;
+}
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+.pagination a {
+    text-decoration: none;
+    color: #68B2E3;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: 1px solid #68B2E3;
+    border-radius: 5px;
+}
+.pagination a:hover {
+    background-color: #68B2E3;
+    color: white;
+}
+.pagination span {
+    color: #333;
+    padding: 10px 15px;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+.form-row {
+    display: flex; /* Use flexbox for horizontal arrangement */
+    align-items: center; /* Vertically align items */
+    gap: 10px; /* Add some spacing between elements */
+}
+
+.form-group {
+    flex: 1; /* Allow elements to take up available space */
+    margin-right: 10px; /*Add spacing between form elements*/
+}
+
+.remarks-row {
+    display: flex; /* Horizontal alignment */
+    align-items: center; /* Vertically align items */
+    gap: 10px; /* Add spacing between the text area and button */
+    margin-top: 10px;
 }

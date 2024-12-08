@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
 import sqlite3
 from datetime import datetime
+from datetime import datetime, timezone
 
 
 app = Flask(__name__)
@@ -8,6 +9,7 @@ app.secret_key = 'your_secret_key'  # Used for flashing messages
 
 # Database initialization
 DATABASE = 'database.db'
+per_page = 10  # Number of logs per page
 
 def init_db():
     with sqlite3.connect(DATABASE) as conn:
@@ -28,7 +30,28 @@ def init_db():
             )
         ''')
         conn.commit()
-from datetime import datetime, timezone
+
+def get_logs_n_pagination_data():
+    page = request.args.get('page', 1, type=int)
+    offset = (page - 1) * per_page
+
+    # Fetch data from the database with pagination
+    with sqlite3.connect(DATABASE) as conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT id, date, start, finish, initial, rating, remarks, ojti, examiner, trainee, op
+            FROM ats_log ORDER BY id DESC 
+            LIMIT ? OFFSET ?
+        ''', (per_page, offset))
+        logs = cursor.fetchall()
+
+        # Get total count for pagination
+        cursor.execute('SELECT COUNT(*) FROM ats_log')
+        total_logs = cursor.fetchone()[0]
+
+    # Calculate total pages
+    total_pages = (total_logs + per_page - 1) // per_page
+    return logs, page, total_pages
 
 @app.route('/', methods=['GET'])
 def index():
@@ -71,7 +94,10 @@ def new_ats_log_solo():
     options = ['Solo', 'OJT', 'Assessment']
     ratings = ['ADC','APP','APS','ATCA']
     initials = ['MO', 'AI', 'MS', 'AD', 'AL', 'AN', 'AS', 'AV', 'HA', 'HI', 'KR', 'MY', 'NA', 'AM', 'AR', 'MZ', 'MM', 'KS', 'SE', 'BI', 'SK', 'SH', 'BR', 'AB', 'LB', 'ME', 'MR', 'AO', 'MA']
-    return render_template('new_ats_log_solo.html', date=current_date, time=current_utc_time, ratings=ratings, initials=initials, options=options)
+
+    logs, page, total_pages = get_logs_n_pagination_data()
+
+    return render_template('new_ats_log_solo.html', date=current_date, time=current_utc_time, ratings=ratings, initials=initials, options=options, logs=logs, page=page, total_pages=total_pages)
 
 @app.route('/new_ats_log_ojt', methods=['GET', 'POST'])
 def new_ats_log_ojt():
@@ -110,7 +136,9 @@ def new_ats_log_ojt():
     options = ['OJT', 'Assessment', 'Solo']
     ratings = ['ADC','APP','APS','ATCA']
     initials = ['MO', 'AI', 'MS', 'AD', 'AL', 'AN', 'AS', 'AV', 'HA', 'HI', 'KR', 'MY', 'NA', 'AM', 'AR', 'MZ', 'MM', 'KS', 'SE', 'BI', 'SK', 'SH', 'BR', 'AB', 'LB', 'ME', 'MR', 'AO', 'MA']
-    return render_template('new_ats_log_ojt.html', date=current_date, time=current_utc_time, ratings=ratings, initials=initials, options=options)
+    
+    logs, page, total_pages = get_logs_n_pagination_data()
+    return render_template('new_ats_log_ojt.html', date=current_date, time=current_utc_time, ratings=ratings, initials=initials, options=options, logs=logs, page=page, total_pages=total_pages)
 
 
 @app.route('/new_ats_log_assessment', methods=['GET', 'POST'])
@@ -150,12 +178,13 @@ def new_ats_log_assessment():
     options = ['Assessment', 'Solo', 'OJT']
     ratings = ['ADC','APP','APS','ATCA']
     initials = ['MO', 'AI', 'MS', 'AD', 'AL', 'AN', 'AS', 'AV', 'HA', 'HI', 'KR', 'MY', 'NA', 'AM', 'AR', 'MZ', 'MM', 'KS', 'SE', 'BI', 'SK', 'SH', 'BR', 'AB', 'LB', 'ME', 'MR', 'AO', 'MA']
-    return render_template('new_ats_log_assessment.html', date=current_date, time=current_utc_time, ratings=ratings, initials=initials, options=options)
+    
+    logs, page, total_pages = get_logs_n_pagination_data()
+    return render_template('new_ats_log_assessment.html', date=current_date, time=current_utc_time, ratings=ratings, initials=initials, options=options, logs=logs, page=page, total_pages=total_pages)
 
 @app.route('/ats_logs', methods=['GET'])
 def ats_logs():
     page = request.args.get('page', 1, type=int)
-    per_page = 10  # Number of logs per page
     offset = (page - 1) * per_page
 
     # Fetch data from the database with pagination
