@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Traffic Services Duty Log</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <img src="/static/logo.png" alt="FANS Logo" class="logo">
+        <h1>Air Traffic Services Duty Hour Log</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="/new_ats_log_solo">
+            <!-- Horizontal Form Row -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="option">OP :</label>
+                    <select id="option" name="option" required onchange="opSelected(this)">
+                        {% for option in options %}
+                            <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" value="{{ date }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="start">Start:</label>
+                    <input type="text" id="start" name="start" value="{{ time }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="finish">Finish:</label>
+                    <input type="text" id="finish" name="finish" value="{{ time }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="rating">Rating :</label>
+                    <select id="rating" name="rating" required>
+                        {% for rating in ratings %}
+                            <option value="{{ rating }}">{{ rating }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="initials">Initial:</label>
+                    <select id="initials" name="initials" required>
+                        {% for initial in initials %}
+                            <option value="{{ initial }}">{{ initial }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="remarks-row">
+                <label for="remarks">Remarks:</label>
+                <textarea id="remarks" name="remarks"></textarea>
+                <button type="submit" class="submit-btn">Save</button>
+            </div>
+            
+        </form>
+
+        <br><br><br>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Start</th>
+                    <th>Finish</th>
+                    <th>Initials</th>
+                    <th>Rating</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                <tr>
+                    <td style="width: 100px;">{{ log[1] }}</td>
+                    <td>{{ log[2] }}</td>
+                    <td>{{ log[3] }}</td>
+                    <td>
+                        {% if log[10] == "Solo" %}
+                        <span class="chip">{{ log[4] }}</span>
+                        {% elif log[10] == "OJT" %}
+                        <span class="chip">OJTI: {{ log[7] }}</span> 
+                        <span class="chip">Trainee: {{ log[9] }}</span>
+                        {% elif log[10] == "Assessment" %}
+                        <span class="chip">OJTI: {{ log[7] }}</span> 
+                        <span class="chip">Examiner: {{ log[8] }}</span> 
+                        <span class="chip">Trainee: {{ log[9] }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ log[5] }}</td>
+                    <td>{{ log[6] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            {% if page > 1 %}
+            <a href="{{ url_for('new_ats_log_solo', page=page-1) }}">Previous</a>
+            {% endif %}
+            <span>Page {{ page }} of {{ total_pages }}</span>
+            {% if page < total_pages %}
+            <a href="{{ url_for('new_ats_log_solo', page=page+1) }}">Next</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+<script>
+    function opSelected(element){
+     op = document.getElementById("option").innerHTML = element.value;
+     if (op == 'Solo'){
+        window.open("/new_ats_log_solo","_self")
+     }
+     if (op == 'OJT'){
+        window.open("/new_ats_log_ojt","_self")
+     }
+     if (op == 'Assessment'){
+        window.open("/new_ats_log_assessment","_self")
+     }
+     
+}
+</script>
+</html>
