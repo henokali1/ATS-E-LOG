@@ -89,30 +89,29 @@
                     <th>Remarks</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for log in logs %}
-                <tr>
-                    <td style="width: 100px;">{{ log[1] }}</td>
-                    <td>{{ log[3] }}</td>
-                    <td>{{ log[5] }}</td>
-                    <td>
-                        {% if log[13] == "Solo" %}
-                        <span class="chip">{{ log[7] }}</span>
-                        {% elif log[13] == "OJT" %}
-                        <span class="chip">OJTI: {{ log[7] }}</span> 
-                        <span class="chip">Trainee: {{ log[9] }}</span>
-                        {% elif log[13] == "Assessment" %}
-                        <span class="chip">OJTI: {{ log[7] }}</span> 
-                        <span class="chip">Examiner: {{ log[8] }}</span> 
-                        <span class="chip">Trainee: {{ log[9] }}</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ log[8] }}</td>
-                    <td>{{ log[9] }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            {% for log in logs %}
+            <tr>
+                <td style="width: 100px;">{{ log[1] }}</td>
+                <td>{{ log[3] }}</td>
+                <td>{{ log[5] }}</td>
+                <td>
+                    {% if log[13] == "Solo" %}
+                    <span class="chip">{{ log[7] }}</span>
+                    {% elif log[13] == "OJT" %}
+                    <span class="chip">OJTI: {{ log[10] }}</span> 
+                    <span class="chip">Trainee: {{ log[12] }}</span>
+                    {% elif log[13] == "Assessment" %}
+                    <span class="chip">OJTI: {{ log[10] }}</span> 
+                    <span class="chip">Examiner: {{ log[11] }}</span> 
+                    <span class="chip">Trainee: {{ log[12] }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ log[8] }}</td>
+                <td>{{ log[9] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
         <!-- Pagination Controls -->
         <div class="pagination">
