@@ -18,8 +18,11 @@ def init_db():
             CREATE TABLE IF NOT EXISTS ats_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date TEXT,
+                date_ts INTEGER,
                 start TEXT,
+                start_ts INTEGER,
                 finish TEXT,
+                finish_ts INTEGER,
                 initial TEXT,
                 rating TEXT,
                 remarks TEXT,
@@ -39,7 +42,7 @@ def get_logs_n_pagination_data():
     with sqlite3.connect(DATABASE) as conn:
         cursor = conn.cursor()
         cursor.execute('''
-            SELECT id, date, start, finish, initial, rating, remarks, ojti, examiner, trainee, op
+            SELECT id, date, date_ts, start, start_ts, finish, finish_ts, initial, rating, remarks, ojti, examiner, trainee, op
             FROM ats_log ORDER BY id DESC 
             LIMIT ? OFFSET ?
         ''', (per_page, offset))
@@ -57,6 +60,7 @@ def get_logs_n_pagination_data():
 def index():
         return redirect('/new_ats_log_solo')
 
+
 @app.route('/new_ats_log_solo', methods=['GET', 'POST'])
 def new_ats_log_solo():
     if request.method == 'POST':
@@ -71,18 +75,37 @@ def new_ats_log_solo():
         trainee = 'na'
         op = 'Solo'
 
+        date_sp = date.split('-')
+        year = int(date_sp[0])
+        month = int(date_sp[1])
+        day = int(date_sp[2])
+
+        start_sp = start.split(':')
+        start_hour = int(start_sp[0])
+        start_minute = int(start_sp[1])
+
+        finish_sp = finish.split(':')
+        finish_hour = int(finish_sp[0])
+        finish_minute = int(finish_sp[1])
+
+        # convert to unix tmiestamp
+        date_ts = int(datetime(year, month, day, 0, 0, 0, 0, timezone.utc).timestamp())
+        start_ts = int(datetime(year, month, day, start_hour, start_minute, 0, 0, timezone.utc).timestamp())
+        finish_ts = int(datetime(year, month, day, finish_hour, finish_minute, 0, 0, timezone.utc).timestamp())
+
+
         # Validation
-        if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op]):
-            flash('All fields are required!', 'error')
-            return redirect('/new_ats_log_solo')
+        # if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op]):
+        #     flash('All fields are required!', 'error')
+        #     return redirect('/new_ats_log_solo')
 
         # Save to database
         with sqlite3.connect(DATABASE) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO ats_log (date, start, finish, initial, rating, remarks, ojti, examiner, trainee, op)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op))
+                INSERT INTO ats_log (date, date_ts, start, start_ts, finish, finish_ts, initial, rating, remarks, ojti, examiner, trainee, op)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (date, date_ts, start, start_ts, finish, finish_ts, initials, rating, remarks, ojti, examiner, trainee, op))
             conn.commit()
 
         flash('Log saved successfully!', 'success')
@@ -113,18 +136,38 @@ def new_ats_log_ojt():
         trainee = request.form.get('trainee')
         op = 'OJT'
 
+        
+        date_sp = date.split('-')
+        year = int(date_sp[0])
+        month = int(date_sp[1])
+        day = int(date_sp[2])
+
+        start_sp = start.split(':')
+        start_hour = int(start_sp[0])
+        start_minute = int(start_sp[1])
+
+        finish_sp = finish.split(':')
+        finish_hour = int(finish_sp[0])
+        finish_minute = int(finish_sp[1])
+
+        # convert to unix tmiestamp
+        date_ts = int(datetime(year, month, day, 0, 0, 0, 0, timezone.utc).timestamp())
+        start_ts = int(datetime(year, month, day, start_hour, start_minute, 0, 0, timezone.utc).timestamp())
+        finish_ts = int(datetime(year, month, day, finish_hour, finish_minute, 0, 0, timezone.utc).timestamp())
+
+
         # Validation
-        if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op]):
-            flash('All fields are required!', 'error')
-            return redirect('/new_ats_log_ojt')
+        # if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op]):
+        #     flash('All fields are required!', 'error')
+        #     return redirect('/new_ats_log_ojt')
 
         # Save to database
         with sqlite3.connect(DATABASE) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO ats_log (date, start, finish, initial, rating, remarks, ojti, examiner, trainee, op)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op))
+                INSERT INTO ats_log (date, date_ts, start, start_ts, finish, finish_ts, initial, rating, remarks, ojti, examiner, trainee, op)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (date, date_ts, start, start_ts, finish, finish_ts, initials, rating, remarks, ojti, examiner, trainee, op))
             conn.commit()
 
         flash('Log saved successfully!', 'success')
@@ -155,18 +198,36 @@ def new_ats_log_assessment():
         trainee = request.form.get('trainee')
         op = 'Assessment'
 
+        date_sp = date.split('-')
+        year = int(date_sp[0])
+        month = int(date_sp[1])
+        day = int(date_sp[2])
+
+        start_sp = start.split(':')
+        start_hour = int(start_sp[0])
+        start_minute = int(start_sp[1])
+
+        finish_sp = finish.split(':')
+        finish_hour = int(finish_sp[0])
+        finish_minute = int(finish_sp[1])
+
+        # convert to unix tmiestamp
+        date_ts = int(datetime(year, month, day, 0, 0, 0, 0, timezone.utc).timestamp())
+        start_ts = int(datetime(year, month, day, start_hour, start_minute, 0, 0, timezone.utc).timestamp())
+        finish_ts = int(datetime(year, month, day, finish_hour, finish_minute, 0, 0, timezone.utc).timestamp())
+
         # Validation
-        if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op]):
-            flash('All fields are required!', 'error')
-            return redirect('/new_ats_log_ojt')
+        # if not all([date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op]):
+        #     flash('All fields are required!', 'error')
+        #     return redirect('/new_ats_log_ojt')
 
         # Save to database
         with sqlite3.connect(DATABASE) as conn:
             cursor = conn.cursor()
             cursor.execute('''
-                INSERT INTO ats_log (date, start, finish, initial, rating, remarks, ojti, examiner, trainee, op)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (date, start, finish, initials, rating, remarks, ojti, examiner, trainee, op))
+                INSERT INTO ats_log (date, date_ts, start, start_ts, finish, finish_ts, initial, rating, remarks, ojti, examiner, trainee, op)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (date, date_ts, start, start_ts, finish, finish_ts, initials, rating, remarks, ojti, examiner, trainee, op))
             conn.commit()
 
         flash('Log saved successfully!', 'success')
